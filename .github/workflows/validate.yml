@@ -1,0 +1,44 @@
+name: Validate research instrument
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.13"
+      - name: Check JavaScript syntax
+        run: node --check app.js && node --check analytics.mjs
+      - name: Run analysis tests
+        run: node --test
+      - name: Validate JSON files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in Path(".").rglob("*.json"):
+              json.loads(path.read_text(encoding="utf-8"))
+              print(path)
+          PY
+      - name: Reject accidental direct identifiers
+        shell: bash
+        run: |
+          if grep -RniE --exclude-dir=.git --exclude='*.yml' --exclude='PRIVACY.md'             '(date of birth|patient name|medical record number|doctor.s full name|clinic details)' .; then
+            echo "Potential direct-identifier field found."
+            exit 1
+          fi
