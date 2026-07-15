@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Natoshi-moto/NO-BULLSHIT-PAIN-TRACKER/schemas/daily-log.schema.json",
+  "title": "De-identified daily pain and function log",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "relative_day", "source_class", "pain_now", "pain_interference", "uncertainty"],
+  "properties": {
+    "case_id": {"type": "string", "pattern": "^PATIENT-[0-9]{3,}$"},
+    "relative_day": {"type": "integer"},
+    "source_class": {"enum": ["PATIENT_REPORT", "RECORD", "OUTCOME"]},
+    "pain_now": {"type": ["integer", "null"], "minimum": 0, "maximum": 10},
+    "pain_interference": {"type": ["integer", "null"], "minimum": 0, "maximum": 10},
+    "sleep_hours": {"type": ["number", "null"], "minimum": 0, "maximum": 24},
+    "function_notes": {"type": "string", "maxLength": 2000},
+    "withdrawal_symptoms": {"type": "array", "items": {"type": "string", "maxLength": 100}, "maxItems": 30},
+    "adverse_effects": {"type": "array", "items": {"type": "string", "maxLength": 100}, "maxItems": 30},
+    "urgent_care": {"type": ["boolean", "null"]},
+    "uncertainty": {"type": "string", "maxLength": 2000}
+  }
+}
