@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>No-Bullshit Pain Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <p class="eyebrow">LOCAL-FIRST LONGITUDINAL RESEARCH INSTRUMENT</p>
+    <h1>No-Bullshit Pain Tracker</h1>
+    <p>Measure pain, function and healthcare friction without pretending a score proves a cause.</p>
+    <div class="warning">Not medical advice. This tool does not recommend medication changes. Data stays in this browser unless you export it.</div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Study identity</h2>
+      <div class="grid two">
+        <label>Case ID <input id="caseId" value="PATIENT-001" pattern="PATIENT-[0-9]{3,}" required></label>
+        <label>Study day <input id="studyDay" type="number" value="0" required></label>
+      </div>
+      <p class="hint">Use a pseudonymous ID. Never enter names, dates of birth, addresses, record numbers, clinics, or clinicians.</p>
+    </section>
+
+    <form id="dailyForm" class="panel">
+      <h2>Daily observation</h2>
+      <div class="grid three">
+        <label>Pain now <output id="painNowOut">5</output><input id="painNow" type="range" min="0" max="10" value="5"></label>
+        <label>Worst pain <output id="painWorstOut">7</output><input id="painWorst" type="range" min="0" max="10" value="7"></label>
+        <label>Pain interference <output id="interferenceOut">5</output><input id="interference" type="range" min="0" max="10" value="5"></label>
+        <label>Function <output id="functionOut">5</output><input id="function" type="range" min="0" max="10" value="5"></label>
+        <label>Mood <output id="moodOut">5</output><input id="mood" type="range" min="0" max="10" value="5"></label>
+        <label>Sleep hours <input id="sleep" type="number" min="0" max="24" step=".25" placeholder="e.g. 6.5"></label>
+      </div>
+      <div class="grid two">
+        <label>Withdrawal symptoms <textarea id="withdrawal" placeholder="Comma-separated; leave blank if none observed"></textarea></label>
+        <label>Adverse effects <textarea id="adverse" placeholder="Comma-separated; leave blank if none observed"></textarea></label>
+        <label>Activities completed <textarea id="completed"></textarea></label>
+        <label>Activities prevented <textarea id="prevented"></textarea></label>
+      </div>
+      <label><input id="urgentCare" type="checkbox"> Urgent or emergency care occurred</label>
+      <label>Uncertainty / missing context <textarea id="uncertainty" required placeholder="What is unknown, estimated, or potentially confounded?"></textarea></label>
+      <button type="submit">Save daily observation</button>
+    </form>
+
+    <form id="eventForm" class="panel">
+      <h2>Treatment or system event</h2>
+      <div class="grid two">
+        <label>Event type
+          <select id="eventType">
+            <option>MEDICATION_CHANGE_PROPOSED</option>
+            <option>MEDICATION_CHANGE_OCCURRED</option>
+            <option>CLINICAL_ENCOUNTER</option>
+            <option>ACCESS_DELAY</option>
+            <option>REFERRAL</option>
+            <option>SECOND_OPINION</option>
+            <option>EMERGENCY_CARE</option>
+            <option>OTHER</option>
+          </select>
+        </label>
+        <label>Evidence class
+          <select id="evidenceClass">
+            <option>PATIENT_REPORT</option>
+            <option>RECORD</option>
+            <option>OUTCOME</option>
+          </select>
+        </label>
+      </div>
+      <label>Neutral description <textarea id="eventDescription" required placeholder="Describe what happened, not what it proves. Do not include identifying details or exact doses."></textarea></label>
+      <label>Alternative explanations / uncertainty <textarea id="eventUncertainty" required></textarea></label>
+      <button type="submit">Save event marker</button>
+    </form>
+
+    <section class="panel">
+      <div class="section-head"><h2>Transparent analysis</h2><button id="refresh" type="button" class="secondary">Refresh</button></div>
+      <div id="summary" class="metrics"></div>
+      <canvas id="chart" width="1000" height="360" aria-label="Pain, interference and function over study days"></canvas>
+      <p class="hint">Lines show observations only. Event markers and before/after differences do not establish causation.</p>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Research ledger</h2><span id="count"></span></div>
+      <div id="ledger"></div>
+    </section>
+
+    <section class="panel actions">
+      <h2>Data custody</h2>
+      <button id="exportJson" type="button">Export de-identified JSON</button>
+      <label class="import">Import JSON <input id="importJson" type="file" accept="application/json"></label>
+      <button id="clearData" type="button" class="danger">Delete browser data</button>
+      <p class="hint">Exports may still be identifying through rare event patterns. Review before sharing.</p>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
